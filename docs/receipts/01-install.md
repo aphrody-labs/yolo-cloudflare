@@ -66,3 +66,16 @@ CPUQuotaPerSecUSec=1s
 MemoryMax=2147483648
 DynamicUser=yes
 
+
+## wrangler wrapper fix (22:32:41 UTC)
+The first wrapper put wrangler's config home under root-owned /opt, so non-root runs logged EACCES. It now uses a per-user temp dir, still isolated from any real login:
+
+$ ssh vps /opt/yolo-cf/bin/wrangler --version
+4.157.0
+
+$ ssh bunos /opt/yolo-cf/bin/wrangler --version
+4.157.0
+
+$ ssh prod /opt/yolo-cf/bin/wrangler --version
+4.157.0
+

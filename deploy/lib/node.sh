@@ -68,7 +68,7 @@ install_wrangler() {
   # Isolated config home: wrangler here never sees an existing login, and never sends metrics.
   cat > $OPT/bin/wrangler <<EOF
 #!/bin/sh
-export XDG_CONFIG_HOME=$OPT/wrangler/.config WRANGLER_SEND_METRICS=false
+export XDG_CONFIG_HOME="\${TMPDIR:-/tmp}/yolo-cf-wrangler-\$(id -u)" WRANGLER_SEND_METRICS=false
 exec $OPT/bin/bun --bun $OPT/wrangler/node_modules/wrangler/bin/wrangler.js "\$@"
 EOF
   chmod 755 $OPT/bin/wrangler
