@@ -1,0 +1,11 @@
+{
+  "name": "yolo-cloudflare",
+  "version": "0.1.0",
+  "description": "Operate the self-hosted yolo-cloudflare stack on the yolo WireGuard mesh (workerd, Pingora gateway, Garage, rqlite) and read the vendored Cloudflare docs. Not affiliated with or endorsed by Cloudflare.",
+  "author": {
+    "name": "yolo-rs"
+  },
+  "repository": "https://github.com/yolo-rs/yolo-cloudflare",
+  "license": "Apache-2.0",
+  "keywords": ["workerd", "pingora", "garage", "rqlite", "self-hosted", "wireguard"]
+}

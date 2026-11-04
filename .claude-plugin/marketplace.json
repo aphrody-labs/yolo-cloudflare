@@ -1,0 +1,18 @@
+{
+  "name": "yolo-cloudflare",
+  "owner": {
+    "name": "yolo-rs"
+  },
+  "metadata": {
+    "description": "Self-hosted Cloudflare open source stack for the yolo mesh. Not affiliated with or endorsed by Cloudflare."
+  },
+  "plugins": [
+    {
+      "name": "yolo-cloudflare",
+      "source": "./",
+      "description": "Deploy Workers to the mesh workerd cluster, check cluster health, and read the vendored Cloudflare docs.",
+      "version": "0.1.0",
+      "license": "Apache-2.0"
+    }
+  ]
+}
