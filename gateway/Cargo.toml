@@ -1,0 +1,23 @@
+[package]
+name = "yolo-cf-gateway"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Mesh-only HTTP gateway for the yolo-cloudflare stack, built on Pingora"
+publish = false
+
+[[bin]]
+name = "yolo-cf-gateway"
+path = "src/main.rs"
+
+[dependencies]
+pingora = { version = "0", features = ["lb", "proxy"] }
+async-trait = "0.1"
+log = "0.4"
+env_logger = "0.11"
+
+[profile.release]
+opt-level = 3
+strip = true
+lto = "thin"
+codegen-units = 16

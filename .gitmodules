@@ -1,0 +1,160 @@
+[submodule "upstream/security-audit-skill"]
+	path = upstream/security-audit-skill
+	url = https://github.com/cloudflare/security-audit-skill
+	shallow = true
+[submodule "upstream/pingora"]
+	path = upstream/pingora
+	url = https://github.com/cloudflare/pingora
+	shallow = true
+[submodule "upstream/cloudflared"]
+	path = upstream/cloudflared
+	url = https://github.com/cloudflare/cloudflared
+	shallow = true
+[submodule "upstream/quiche"]
+	path = upstream/quiche
+	url = https://github.com/cloudflare/quiche
+	shallow = true
+[submodule "upstream/cloudflare-os"]
+	path = upstream/cloudflare-os
+	url = https://github.com/cloudflare/cloudflare-os
+	shallow = true
+[submodule "upstream/moltworker"]
+	path = upstream/moltworker
+	url = https://github.com/cloudflare/moltworker
+	shallow = true
+[submodule "upstream/computer"]
+	path = upstream/computer
+	url = https://github.com/cloudflare/computer
+	shallow = true
+[submodule "upstream/cfssl"]
+	path = upstream/cfssl
+	url = https://github.com/cloudflare/cfssl
+	shallow = true
+[submodule "upstream/vinext"]
+	path = upstream/vinext
+	url = https://github.com/cloudflare/vinext
+	shallow = true
+[submodule "upstream/workerd"]
+	path = upstream/workerd
+	url = https://github.com/cloudflare/workerd
+	shallow = true
+[submodule "upstream/agentic-inbox"]
+	path = upstream/agentic-inbox
+	url = https://github.com/cloudflare/agentic-inbox
+	shallow = true
+[submodule "upstream/boringtun"]
+	path = upstream/boringtun
+	url = https://github.com/cloudflare/boringtun
+	shallow = true
+[submodule "upstream/agents"]
+	path = upstream/agents
+	url = https://github.com/cloudflare/agents
+	shallow = true
+[submodule "upstream/vibesdk"]
+	path = upstream/vibesdk
+	url = https://github.com/cloudflare/vibesdk
+	shallow = true
+[submodule "upstream/cloudflare-docs"]
+	path = upstream/cloudflare-docs
+	url = https://github.com/cloudflare/cloudflare-docs
+	shallow = true
+[submodule "upstream/workers-sdk"]
+	path = upstream/workers-sdk
+	url = https://github.com/cloudflare/workers-sdk
+	shallow = true
+[submodule "upstream/mcp-server-cloudflare"]
+	path = upstream/mcp-server-cloudflare
+	url = https://github.com/cloudflare/mcp-server-cloudflare
+	shallow = true
+[submodule "upstream/kumo"]
+	path = upstream/kumo
+	url = https://github.com/cloudflare/kumo
+	shallow = true
+[submodule "upstream/flan"]
+	path = upstream/flan
+	url = https://github.com/cloudflare/flan
+	shallow = true
+[submodule "upstream/capnweb"]
+	path = upstream/capnweb
+	url = https://github.com/cloudflare/capnweb
+	shallow = true
+[submodule "upstream/miniflare"]
+	path = upstream/miniflare
+	url = https://github.com/cloudflare/miniflare
+	shallow = true
+[submodule "upstream/workers-rs"]
+	path = upstream/workers-rs
+	url = https://github.com/cloudflare/workers-rs
+	shallow = true
+[submodule "upstream/skills"]
+	path = upstream/skills
+	url = https://github.com/cloudflare/skills
+	shallow = true
+[submodule "upstream/tableflip"]
+	path = upstream/tableflip
+	url = https://github.com/cloudflare/tableflip
+	shallow = true
+[submodule "upstream/wrangler-legacy"]
+	path = upstream/wrangler-legacy
+	url = https://github.com/cloudflare/wrangler-legacy
+	shallow = true
+[submodule "upstream/ebpf_exporter"]
+	path = upstream/ebpf_exporter
+	url = https://github.com/cloudflare/ebpf_exporter
+	shallow = true
+[submodule "upstream/gokey"]
+	path = upstream/gokey
+	url = https://github.com/cloudflare/gokey
+	shallow = true
+[submodule "upstream/meet"]
+	path = upstream/meet
+	url = https://github.com/cloudflare/meet
+	shallow = true
+[submodule "upstream/templates"]
+	path = upstream/templates
+	url = https://github.com/cloudflare/templates
+	shallow = true
+[submodule "upstream/wildebeest"]
+	path = upstream/wildebeest
+	url = https://github.com/cloudflare/wildebeest
+	shallow = true
+[submodule "upstream/cloudflare-go"]
+	path = upstream/cloudflare-go
+	url = https://github.com/cloudflare/cloudflare-go
+	shallow = true
+[submodule "upstream/lol-html"]
+	path = upstream/lol-html
+	url = https://github.com/cloudflare/lol-html
+	shallow = true
+[submodule "upstream/wrangler-action"]
+	path = upstream/wrangler-action
+	url = https://github.com/cloudflare/wrangler-action
+	shallow = true
+[submodule "upstream/workers-oauth-provider"]
+	path = upstream/workers-oauth-provider
+	url = https://github.com/cloudflare/workers-oauth-provider
+	shallow = true
+[submodule "upstream/nimbus"]
+	path = upstream/nimbus
+	url = https://github.com/cloudflare/nimbus
+	shallow = true
+[submodule "upstream/circl"]
+	path = upstream/circl
+	url = https://github.com/cloudflare/circl
+	shallow = true
+[submodule "upstream/foundations"]
+	path = upstream/foundations
+	url = https://github.com/cloudflare/foundations
+	shallow = true
+[submodule "upstream/serverless-registry"]
+	path = upstream/serverless-registry
+	url = https://github.com/cloudflare/serverless-registry
+	shallow = true
+[submodule "upstream/next-on-pages"]
+	path = upstream/next-on-pages
+	url = https://github.com/cloudflare/next-on-pages
+	shallow = true
+[submodule "upstream/cf-terraforming"]
+	path = upstream/cf-terraforming
+	url = https://github.com/cloudflare/cf-terraforming
+	shallow = true
