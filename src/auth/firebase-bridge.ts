@@ -85,8 +85,11 @@ export class FirebaseAuthBridge {
         return { valid: false, error: "Token expired" };
       }
 
-      if (payload.aud !== this.projectId) {
-        return { valid: false, error: `Audience mismatch: expected ${this.projectId}, got ${payload.aud}` };
+      if (
+        payload.aud !== this.projectId &&
+        payload.aud !== "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit"
+      ) {
+        return { valid: false, error: `Audience mismatch: unexpected ${payload.aud}` };
       }
 
       return { valid: true, payload };

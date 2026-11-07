@@ -145,8 +145,23 @@ describe("Aphrody Email Templates (2026 Edition)", () => {
 
 describe("Multi-Provider Mail Dispatcher & VPS Mesh Relay", () => {
   test("MailDispatcher initializes and routes to VPS mesh relay fallback", async () => {
-    const dispatcher = new MailDispatcher();
-    // Test direct dispatch to live VPS mesh relay
+    // Spin up local test mesh relay
+    using testServer = Bun.serve({
+      port: 17099,
+      fetch(req) {
+        return Response.json({
+          success: true,
+          messageId: "vps_test_mock_12345",
+          provider: "vps-mesh-test",
+        });
+      },
+    });
+
+    const dispatcher = new MailDispatcher({
+      vpsMeshEndpoint: "http://127.0.0.1:17099/api/mail/send",
+      vpsMeshAuthToken: "aphrody-mesh-auth-2026",
+    });
+
     const receipt = await dispatcher.send({
       to: "contact@aphrody.com",
       template: "system-alert",
@@ -162,8 +177,8 @@ describe("Multi-Provider Mail Dispatcher & VPS Mesh Relay", () => {
 
     expect(receipt.success).toBe(true);
     expect(receipt.provider).toBe("vps-mesh");
-    expect(receipt.messageId).toContain("vps_prod");
-    expect(receipt.latencyMs).toBeGreaterThan(0);
+    expect(receipt.messageId).toBe("vps_test_mock_12345");
+    expect(receipt.latencyMs).toBeGreaterThanOrEqual(0);
   });
 });
 
