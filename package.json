@@ -1,0 +1,15 @@
+{
+  "name": "@yolo-rs/yolo-cloudflare",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.4.4",
+  "scripts": {
+    "test": "bun test",
+    "domains": "bun run src/aphrody-domains.ts",
+    "lock-sources": "bun run scripts/lock-sources.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.4"
+  }
+}

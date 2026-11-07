@@ -10,6 +10,7 @@ Cloudflare's open source code and documentation, vendored as pinned git submodul
 | --- | --- |
 | `upstream/<name>` | 40 shallow submodules of `https://github.com/cloudflare/<name>`, the most-starred licensed repositories of the organisation. Pins, stars, licenses: `UPSTREAM.md`, `sources.lock.json` (regenerate with `bun scripts/lock-sources.ts`). |
 | `upstream/cloudflare-docs` | The Cloudflare documentation source (CC-BY-4.0). Product map: `docs/INDEX.md`. |
+| `src/aphrody-domains.ts` | Canonical DNS and edge routing manifest for the 18 public Aphrody product domains (`aphrody.com` hierarchy), with unit tests in `src/aphrody-domains.test.ts`. |
 | `gateway/` | `yolo-cf-gateway`, an HTTP gateway written on the Pingora framework (crates.io `pingora`, Apache-2.0). |
 | `workers/hello/` | Test Worker (TypeScript, bundled with `bun build`). |
 | `deploy/` | Declarative cluster definition (`cluster.env`), idempotent `install.sh`, `uninstall.sh`, `deploy-worker.sh`, `health.sh`. |
@@ -55,6 +56,31 @@ deploy/uninstall.sh               # remove everything install.sh created
 ```
 
 The scripts run from any operator machine with the SSH aliases `vps`, `bunos`, `prod` and Bun. The gateway is built on `vps` with Cargo.
+
+## Aphrody Public Domain Hierarchy & Edge Routing Manifest
+
+`src/aphrody-domains.ts` codifies the canonical DNS and edge routing manifest for the 18 public product domains in the `aphrody.com` zone (verified with `bun test`):
+
+| Hostname | Category | DNS | Proxied | Routing Tier | Canonical Path | Owner Repo | Backing Service | Health Path |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `aphrody.com` | apex | A/AAAA | no | `origin-direct` | `/` | `yolo-hub` | `aphrody-webos-apex` | `/api/health` |
+| `search.aphrody.com` | discovery | CNAME | yes | `edge-proxy` | `/search` | `yolo-ai` | `aphrody-search` | `/api/search/health` |
+| `ai.aphrody.com` | intelligence | CNAME | yes | `edge-proxy` | `/ai` | `yolo-ai` | `yolo-agent-engine` | `/v1/health` |
+| `drive.aphrody.com` | workspace | CNAME | yes | `edge-proxy` | `/files` | `yolo-os` | `aphrody-drive` | `/api/drive/health` |
+| `docs.aphrody.com` | workspace | CNAME | yes | `edge-worker` | `/word` | `yolo-ui` | `craft-word` | `/health` |
+| `sheets.aphrody.com` | workspace | CNAME | yes | `edge-worker` | `/grid` | `yolo-ui` | `craft-grid` | `/health` |
+| `slides.aphrody.com` | workspace | CNAME | yes | `edge-worker` | `/deck` | `yolo-ui` | `craft-deck` | `/health` |
+| `mail.aphrody.com` | communication | CNAME | yes | `edge-worker` | `/mail` | `yolo-cloudflare` | `agentic-inbox` | `/health` |
+| `meet.aphrody.com` | communication | CNAME | yes | `edge-worker` | `/meet` | `yolo-cloudflare` | `cloudflare-meet` | `/health` |
+| `calendar.aphrody.com` | workspace | CNAME | yes | `edge-worker` | `/calendar` | `yolo-ui` | `aphrody-calendar` | `/health` |
+| `photos.aphrody.com` | media | CNAME | yes | `edge-worker` | `/photo` | `yolo-ui` | `craft-photo` | `/health` |
+| `translate.aphrody.com` | intelligence | CNAME | yes | `edge-proxy` | `/translate` | `yolo-ai` | `aphrody-translate` | `/api/translate/health` |
+| `maps.aphrody.com` | discovery | CNAME | yes | `edge-worker` | `/maps` | `yolo-web` | `aphrody-maps` | `/health` |
+| `play.aphrody.com` | media | CNAME | yes | `edge-proxy` | `/play` | `yolo-os` | `aphrody-play` | `/api/play/health` |
+| `os.aphrody.com` | platform | A/AAAA | no | `origin-direct` | `/os` | `yolo-os` | `bunos-webos` | `/api/health` |
+| `console.aphrody.com` | infrastructure | CNAME | yes | `edge-proxy` | `/console` | `yolo-vps` | `aphrody-console` | `/api/console/health` |
+| `api.aphrody.com` | infrastructure | A/AAAA | yes | `mesh-gateway` | `/api` | `yolo-cloudflare` | `yolo-cf-gateway` | `/_gateway/health` |
+| `yolo.aphrody.com` | platform | CNAME | yes | `edge-worker` | `/yolo` | `yolo-hub` | `yolo-hub` | `/fr/` |
 
 ## Claude Code plugin
 
