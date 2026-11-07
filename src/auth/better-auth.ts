@@ -116,7 +116,7 @@ export function createAphrodyAuth(config?: CreateAphrodyAuthConfig) {
       // 4. Admin Role-Based Access Control
       admin({
         defaultRole: "user",
-        adminRoles: ["admin", "superadmin"],
+        adminRoles: ["admin"],
       }),
 
       // 5. Bearer Token Authentication

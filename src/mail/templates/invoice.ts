@@ -33,7 +33,7 @@ export function renderInvoiceEmail(props: InvoiceTemplateProps): { html: string;
         ${item.period ? `<div style="font-size: 11px; color: #64748B;">${item.period}</div>` : ""}
       </td>
       <td style="padding: 10px 12px; font-size: 13px; text-align: right; font-family: monospace;">
-        &euro;${item.amountEur.toFixed(2)}
+        €${item.amountEur.toFixed(2)}
       </td>
     </tr>
   `
@@ -60,15 +60,15 @@ export function renderInvoiceEmail(props: InvoiceTemplateProps): { html: string;
         ${itemsRows}
         <tr style="border-top: 2px solid #CBD5E1;">
           <td style="padding: 8px 12px; font-size: 12px; color: #64748B; text-align: right;">Subtotal (HT):</td>
-          <td style="padding: 8px 12px; font-size: 12px; text-align: right; font-family: monospace;">&euro;${subtotal.toFixed(2)}</td>
+          <td style="padding: 8px 12px; font-size: 12px; text-align: right; font-family: monospace;">€${subtotal.toFixed(2)}</td>
         </tr>
         <tr>
           <td style="padding: 4px 12px; font-size: 12px; color: #64748B; text-align: right;">VAT (${vatRate}%):</td>
-          <td style="padding: 4px 12px; font-size: 12px; text-align: right; font-family: monospace;">&euro;${vatAmount.toFixed(2)}</td>
+          <td style="padding: 4px 12px; font-size: 12px; text-align: right; font-family: monospace;">€${vatAmount.toFixed(2)}</td>
         </tr>
         <tr style="background-color: #F8FAFC;">
           <td style="padding: 12px; font-size: 14px; font-weight: 700; text-align: right; color: #0F172A;">Total Paid (TTC):</td>
-          <td style="padding: 12px; font-size: 15px; font-weight: 800; text-align: right; color: #2563EB; font-family: monospace;">&euro;${total.toFixed(2)}</td>
+          <td style="padding: 12px; font-size: 15px; font-weight: 800; text-align: right; color: #2563EB; font-family: monospace;">€${total.toFixed(2)}</td>
         </tr>
       </table>
     </div>
