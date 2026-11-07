@@ -23,12 +23,15 @@ export interface ClusterEnv {
 const app = new Hono<{ Bindings: ClusterEnv }>();
 
 // Security and CORS middleware
-app.use("*", cors({
-  origin: "*",
-  allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowHeaders: ["Content-Type", "Authorization", "X-Mesh-Node"],
-  maxAge: 86400,
-}));
+app.use(
+  "*",
+  cors({
+    origin: "*",
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowHeaders: ["Content-Type", "Authorization", "X-Mesh-Node"],
+    maxAge: 86400,
+  }),
+);
 
 app.use("*", async (c, next) => {
   await next();
@@ -46,13 +49,13 @@ app.get("/health", (c) => {
 app.get("/_mesh/health", async (c) => {
   const node = c.env.NODE || "unknown";
   const meshIp = c.env.MESH_IP || "127.0.0.1";
-  
+
   // Probe rqlite health if available
   let dbStatus = "not_configured";
   if (c.env.DB && c.env.DB_AUTH) {
     try {
       const res = await c.env.DB.fetch("http://rqlite/readyz", {
-        headers: { authorization: c.env.DB_AUTH }
+        headers: { authorization: c.env.DB_AUTH },
       });
       dbStatus = res.ok ? "healthy" : `degraded_${res.status}`;
     } catch {
@@ -73,8 +76,8 @@ app.get("/_mesh/health", async (c) => {
       "r2_garage_s3",
       "gcs_archive_bridge",
       "crawler_seo_render",
-      "edge_rate_limit"
-    ]
+      "edge_rate_limit",
+    ],
   });
 });
 
@@ -86,7 +89,7 @@ app.get("/api/db/stats", async (c) => {
 
   try {
     const res = await c.env.DB.fetch("http://rqlite/status", {
-      headers: { authorization: c.env.DB_AUTH }
+      headers: { authorization: c.env.DB_AUTH },
     });
     const status = await res.json();
     return c.json({ node: c.env.NODE, status });
@@ -110,7 +113,7 @@ const BOT_USER_AGENTS = [
   "slackbot",
   "discordbot",
   "whatsapp",
-  "telegrambot"
+  "telegrambot",
 ];
 
 function isBot(userAgent: string): boolean {
@@ -124,7 +127,8 @@ app.get("/seo/meta", (c) => {
   const userAgent = c.req.header("user-agent") ?? "";
 
   const title = "Aphrody | Universal High-Performance Standards Ecosystem";
-  const description = "Next-generation distributed edge platform powered by Cloudflare Workers, Google Cloud, and high-performance bare metal VPS clusters running pure Bun and Rust.";
+  const description =
+    "Next-generation distributed edge platform powered by Cloudflare Workers, Google Cloud, and high-performance bare metal VPS clusters running pure Bun and Rust.";
   const canonical = `https://aphrody.com${targetPath}`;
   const ogImage = "https://aphrody.com/og.png";
 
@@ -177,7 +181,7 @@ app.get("/seo/meta", (c) => {
     description,
     canonical,
     ogImage,
-    isBot: false
+    isBot: false,
   });
 });
 
@@ -195,8 +199,8 @@ app.get("/", (c) => {
       health: "/health",
       mesh_health: "/_mesh/health",
       db_stats: "/api/db/stats",
-      seo_meta: "/seo/meta?path=/"
-    }
+      seo_meta: "/seo/meta?path=/",
+    },
   });
 });
 

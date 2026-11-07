@@ -31,7 +31,7 @@ app.use(
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization", "X-Mesh-Node"],
     maxAge: 86400,
-  })
+  }),
 );
 
 app.use("*", async (c, next) => {
@@ -230,8 +230,8 @@ app.get("/api/mail/stats", async (c) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify([
-          'SELECT count(*) FROM outbound_emails',
-          'SELECT count(*) FROM inbound_emails',
+          "SELECT count(*) FROM outbound_emails",
+          "SELECT count(*) FROM inbound_emails",
         ]),
       });
       const data = (await res.json()) as any;
@@ -348,7 +348,52 @@ app.get("/seo/meta", (c) => {
   });
 });
 
-// 5. Default Root Route
+// 5. Unified Origin Routing (/v1/*) — Proxy to prod origin (https://api.aphrody.com/v1/)
+const PROD_ORIGIN = "https://api.aphrody.com";
+
+app.all("/v1/*", async (c) => {
+  const url = new URL(c.req.url);
+  const targetUrl = new URL(url.pathname + url.search, PROD_ORIGIN);
+
+  const headers = new Headers(c.req.raw.headers);
+  headers.set("X-Forwarded-Host", url.host);
+  headers.set("X-Forwarded-Proto", url.protocol.replace(":", ""));
+  headers.set("X-Mesh-Node", c.env.NODE || "unknown");
+  headers.set("X-Mesh-IP", c.env.MESH_IP || "127.0.0.1");
+
+  try {
+    const response = await fetch(targetUrl.toString(), {
+      method: c.req.method,
+      headers,
+      body: ["GET", "HEAD"].includes(c.req.method)
+        ? undefined
+        : await c.req.raw.blob(),
+      redirect: "follow",
+    });
+
+    const resHeaders = new Headers(response.headers);
+    resHeaders.set("X-Served-By-Node", c.env.NODE || "unknown");
+    resHeaders.set("X-Mesh-Origin", PROD_ORIGIN);
+
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: resHeaders,
+    });
+  } catch (err: any) {
+    return c.json(
+      {
+        error: "Mesh Gateway Origin Routing Error",
+        origin: PROD_ORIGIN,
+        path: url.pathname,
+        message: err.message,
+      },
+      502,
+    );
+  }
+});
+
+// 6. Default Root Route
 app.get("/", (c) => {
   return c.json({
     gateway: "yolo-edge-mesh-gateway",
@@ -366,6 +411,7 @@ app.get("/", (c) => {
       mail_stats: "/api/mail/stats",
       db_stats: "/api/db/stats",
       seo_meta: "/seo/meta?path=/",
+      v1_origin: "/v1/* -> https://api.aphrody.com/v1/",
     },
   });
 });

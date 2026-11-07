@@ -1,4 +1,5 @@
 # Worker on workerd, called across the mesh through each gateway (2026-11-04T22:30:19Z)
+
 $ ssh vps 'curl -s -m 3 http://10.200.77.1:17080/direct'
 {"worker":"hello","runtime":"workerd","node":"vps","mesh_ip":"10.200.77.1","method":"GET","path":"/direct","time":"2026-11-04T22:30:19.768Z"}
 $ ssh bunos 'curl -s -m 3 http://10.200.77.3:17080/direct'
@@ -77,6 +78,6 @@ $ ssh vps 'for i in 1 2 3 4 5 6; do curl -s -m 3 http://10.200.77.5:17081/ | gre
 "node":"prod"
 
 $ ssh bunos 'curl -s -m 5 -X POST http://10.200.77.3:17081/db; echo; curl -s -m 5 -X POST http://10.200.77.1:17081/db; echo; curl -s -m 5 http://10.200.77.5:17081/db'
-{"node":"vps","visits":{"results":[{"columns":["node","COUNT(*)"],"types":["text","integer"],"values":[["vps",1]]}]}}
-{"node":"vps","visits":{"results":[{"columns":["node","COUNT(*)"],"types":["text","integer"],"values":[["vps",2]]}]}}
+{"node":"vps","visits":{"results":[{"columns":["node","COUNT(_)"],"types":["text","integer"],"values":[["vps",1]]}]}}
+{"node":"vps","visits":{"results":[{"columns":["node","COUNT(_)"],"types":["text","integer"],"values":[["vps",2]]}]}}
 {"node":"vps","visits":{"results":[{"columns":["node","COUNT(*)"],"types":["text","integer"],"values":[["vps",2]]}]}}

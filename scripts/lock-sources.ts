@@ -21,14 +21,17 @@ const VERIFIED: Record<string, string> = {
 };
 
 const retrieved = new Date().toISOString().slice(0, 10);
-const raw = await $`gh api --paginate ${"orgs/cloudflare/repos?per_page=100&type=public"} --jq ${".[]"}`.text();
+const raw =
+  await $`gh api --paginate ${"orgs/cloudflare/repos?per_page=100&type=public"} --jq ${".[]"}`.text();
 const repos: Repo[] = raw
   .trim()
   .split("\n")
   .map((l) => JSON.parse(l))
   .sort((a: Repo, b: Repo) => b.stargazers_count - a.stargazers_count);
 
-const paths = (await $`git config -f .gitmodules --get-regexp ${"^submodule\\..*\\.path$"}`.text())
+const paths = (
+  await $`git config -f .gitmodules --get-regexp ${"^submodule\\..*\\.path$"}`.text()
+)
   .trim()
   .split("\n")
   .map((l) => l.split(" ")[1]);
@@ -68,11 +71,17 @@ for (const [i, r] of repos.entries()) {
     name: r.name,
     rank: i + 1,
     stars: r.stargazers_count,
-    reason: r.fork ? "fork of another project" : spdx === "NONE" ? "no license" : `license ${spdx} not verified`,
+    reason: r.fork
+      ? "fork of another project"
+      : spdx === "NONE"
+        ? "no license"
+        : `license ${spdx} not verified`,
   });
 }
 const lockedStars = new Set(sources.map((s) => s.name));
-const noLicense = repos.filter((r) => !r.license && !r.fork && !lockedStars.has(r.name)).slice(0, 15);
+const noLicense = repos
+  .filter((r) => !r.license && !r.fork && !lockedStars.has(r.name))
+  .slice(0, 15);
 
 const lock = {
   schema: 1,
@@ -81,7 +90,10 @@ const lock = {
     "Public repositories of github.com/cloudflare, sorted by stars (gh api, paginated), excluding forks; the first 40 that carry a license. NOASSERTION licenses were verified by reading the LICENSE file.",
   sources,
   skipped,
-  unlicensed_top: noLicense.map((r) => ({ name: r.name, stars: r.stargazers_count })),
+  unlicensed_top: noLicense.map((r) => ({
+    name: r.name,
+    stars: r.stargazers_count,
+  })),
 };
 await Bun.write("sources.lock.json", JSON.stringify(lock, null, 2) + "\n");
 

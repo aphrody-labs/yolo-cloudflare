@@ -18,13 +18,15 @@ export default {
     const subject = message.headers?.get("subject") || "(No Subject)";
     const messageId = message.headers?.get("message-id") || id;
     const spfStatus = message.headers?.get("received-spf") || "unknown";
-    const dkimStatus = message.headers?.get("dkim-signature") ? "signed" : "unsigned";
+    const dkimStatus = message.headers?.get("dkim-signature")
+      ? "signed"
+      : "unsigned";
 
     // 1. Persist inbound event to Cloudflare D1
     if (env.DB) {
       try {
         await env.DB.prepare(
-          "INSERT INTO inbound_emails (id, messageId, fromAddress, toAddress, subject, spfStatus, dkimStatus, rawHeaders, bodySnippet, receivedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+          "INSERT INTO inbound_emails (id, messageId, fromAddress, toAddress, subject, spfStatus, dkimStatus, rawHeaders, bodySnippet, receivedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         )
           .bind(
             id,
@@ -36,7 +38,7 @@ export default {
             dkimStatus,
             "",
             "",
-            Date.now()
+            Date.now(),
           )
           .run();
       } catch (err) {
@@ -69,7 +71,7 @@ export default {
     if (url.pathname === "/api/inbound/latest" && env.DB) {
       try {
         const rows = await env.DB.prepare(
-          "SELECT * FROM inbound_emails ORDER BY receivedAt DESC LIMIT 20"
+          "SELECT * FROM inbound_emails ORDER BY receivedAt DESC LIMIT 20",
         ).all();
         return Response.json({ emails: rows.results });
       } catch (err: any) {

@@ -6,13 +6,13 @@ Consolidated deployment specification bridging **OVHcloud**, **Hostinger**, **Cl
 
 ## 1. Multi-Cloud Node & Service Matrix
 
-| Cloud Provider | Resource / Node | Role & Capabilities | Network / Endpoints | Operating System |
-| :--- | :--- | :--- | :--- | :--- |
-| **Cloudflare** | Edge Network (Zones `aphrody.app` & `aphrody.com`) | DNS, TLS termination, Edge Workers, D1 SQL, KV Cache, Turnstile, Email Routing | `https://*.aphrody.app`<br>`https://*.aphrody.com` | Cloudflare V8 / workerd |
-| **Hostinger** | VM `2116886` (`prod`) | KVM 8 (8 vCPU, 32GB RAM), Main workerd Gateway, Self-hosted Mail Relay, rqlite Raft node | `72.60.186.43`<br>`10.200.77.5:17080` | Arch Linux Rolling (Kernel 6.x) |
-| **OVHcloud** | VM `vps` | Mesh Hub, Build Farm, Pingora Gateway, rqlite Raft node | `51.77.147.152`<br>`10.200.77.1:17080` | Ubuntu 24.04 LTS |
-| **OVHcloud** | VM `bunos` | AI Batch Inference, Cache Mirror, rqlite Raft node, Garage S3 | `51.255.162.6`<br>`10.200.77.3:17080` | Ubuntu 24.04 LTS |
-| **Google Cloud** | Project `aphrody` | Firebase Auth Bridge, Google Cloud Storage archives (`gs://aphrody-yolo-archive`), Service Account | IAM: `admin-sa@rgfr-8927d...` | GCP Cloud Run / Storage |
+| Cloud Provider   | Resource / Node                                    | Role & Capabilities                                                                                | Network / Endpoints                                | Operating System                |
+| :--------------- | :------------------------------------------------- | :------------------------------------------------------------------------------------------------- | :------------------------------------------------- | :------------------------------ |
+| **Cloudflare**   | Edge Network (Zones `aphrody.app` & `aphrody.com`) | DNS, TLS termination, Edge Workers, D1 SQL, KV Cache, Turnstile, Email Routing                     | `https://*.aphrody.app`<br>`https://*.aphrody.com` | Cloudflare V8 / workerd         |
+| **Hostinger**    | VM `2116886` (`prod`)                              | KVM 8 (8 vCPU, 32GB RAM), Main workerd Gateway, Self-hosted Mail Relay, rqlite Raft node           | `72.60.186.43`<br>`10.200.77.5:17080`              | Arch Linux Rolling (Kernel 6.x) |
+| **OVHcloud**     | VM `vps`                                           | Mesh Hub, Build Farm, Pingora Gateway, rqlite Raft node                                            | `51.77.147.152`<br>`10.200.77.1:17080`             | Ubuntu 24.04 LTS                |
+| **OVHcloud**     | VM `bunos`                                         | AI Batch Inference, Cache Mirror, rqlite Raft node, Garage S3                                      | `51.255.162.6`<br>`10.200.77.3:17080`              | Ubuntu 24.04 LTS                |
+| **Google Cloud** | Project `aphrody`                                  | Firebase Auth Bridge, Google Cloud Storage archives (`gs://aphrody-yolo-archive`), Service Account | IAM: `admin-sa@rgfr-8927d...`                      | GCP Cloud Run / Storage         |
 
 ---
 
@@ -57,6 +57,7 @@ flowchart LR
 Aphrody acts as an autonomous OAuth2 and OpenID Connect (OIDC) identity provider across all internal and third-party backends.
 
 ### 3.1 Standard Discovery Endpoints
+
 - **OIDC Discovery**: `GET https://auth.aphrody.app/.well-known/openid-configuration`
 - **JWKS Endpoint**: `GET https://auth.aphrody.app/.well-known/jwks.json`
 - **Authorization**: `GET https://auth.aphrody.app/oauth/authorize` (supports PKCE `S256` & `plain`)
@@ -64,7 +65,9 @@ Aphrody acts as an autonomous OAuth2 and OpenID Connect (OIDC) identity provider
 - **UserInfo**: `GET https://auth.aphrody.app/oauth/userinfo`
 
 ### 3.2 Multi-Provider Adapters (`src/auth/providers.ts`)
+
 Pre-configured templates for 7 identity providers:
+
 1. **Google Cloud & Workspace**: `https://accounts.google.com/o/oauth2/v2/auth`
 2. **GitHub**: `https://github.com/login/oauth/authorize`
 3. **Cloudflare Access**: `https://dash.cloudflare.com/oauth2/auth`
@@ -74,6 +77,7 @@ Pre-configured templates for 7 identity providers:
 7. **Aphrody Mesh Native**: Internal mesh SSO
 
 ### 3.3 Firebase Auth Bridge (`src/auth/firebase-bridge.ts`)
+
 Generates RS256-signed Firebase Custom Tokens with custom claims (`role`, `plan`, `orgId`) to authenticate seamlessly against Google Firebase Firestore and Cloud Storage.
 
 ---
@@ -83,6 +87,7 @@ Generates RS256-signed Firebase Custom Tokens with custom claims (`role`, `plan`
 Any existing or future Aphrody backend can integrate authentication in 3 lines of code.
 
 ### 4.1 Hono Middleware
+
 ```typescript
 import { Hono } from "hono";
 import { AphrodyAuthClient } from "./src/auth/client-sdk.js";
@@ -100,6 +105,7 @@ app.get("/api/dashboard", (c) => {
 ```
 
 ### 4.2 Web Standards / Native `Bun.serve`
+
 ```typescript
 import { AphrodyAuthClient } from "./src/auth/client-sdk.js";
 
@@ -112,7 +118,7 @@ Bun.serve({
     if (!check.authorized) return check.response;
 
     return Response.json({ status: "authenticated", user: check.user });
-  }
+  },
 });
 ```
 

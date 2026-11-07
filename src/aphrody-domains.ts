@@ -10,10 +10,7 @@
 export type DnsRecordType = "A/AAAA" | "CNAME";
 
 export type EdgeRoutingTier =
-  | "origin-direct"
-  | "edge-worker"
-  | "edge-proxy"
-  | "mesh-gateway";
+  "origin-direct" | "edge-worker" | "edge-proxy" | "mesh-gateway";
 
 export type AphrodyProductCategory =
   | "apex"
@@ -67,7 +64,8 @@ export const APHRODY_PUBLIC_DOMAINS: readonly AphrodyDomainEntry[] = [
     ownerRepo: "yolo-hub",
     service: "aphrody-webos-apex",
     healthPath: "/api/health",
-    description: "Canonical product origin, WebOS shell, and localized hub directory.",
+    description:
+      "Canonical product origin, WebOS shell, and localized hub directory.",
   },
   {
     hostname: "search.aphrody.com",
@@ -81,7 +79,8 @@ export const APHRODY_PUBLIC_DOMAINS: readonly AphrodyDomainEntry[] = [
     ownerRepo: "yolo-ai",
     service: "aphrody-search",
     healthPath: "/api/search/health",
-    description: "Hybrid BM25, vector, and open-web search index and query engine.",
+    description:
+      "Hybrid BM25, vector, and open-web search index and query engine.",
   },
   {
     hostname: "ai.aphrody.com",
@@ -95,7 +94,8 @@ export const APHRODY_PUBLIC_DOMAINS: readonly AphrodyDomainEntry[] = [
     ownerRepo: "yolo-ai",
     service: "yolo-agent-engine",
     healthPath: "/v1/health",
-    description: "Multi-model AI assistant, agent runtime, and tool-calling workbench.",
+    description:
+      "Multi-model AI assistant, agent runtime, and tool-calling workbench.",
   },
   {
     hostname: "drive.aphrody.com",
@@ -109,7 +109,8 @@ export const APHRODY_PUBLIC_DOMAINS: readonly AphrodyDomainEntry[] = [
     ownerRepo: "yolo-os",
     service: "aphrody-drive",
     healthPath: "/api/drive/health",
-    description: "Cloud VFS, S3/Garage-backed object storage, and workspace file sync.",
+    description:
+      "Cloud VFS, S3/Garage-backed object storage, and workspace file sync.",
   },
   {
     hostname: "docs.aphrody.com",
@@ -123,7 +124,8 @@ export const APHRODY_PUBLIC_DOMAINS: readonly AphrodyDomainEntry[] = [
     ownerRepo: "yolo-ui",
     service: "craft-word",
     healthPath: "/health",
-    description: "Collaborative rich-text and structured document authoring studio (WordCraft).",
+    description:
+      "Collaborative rich-text and structured document authoring studio (WordCraft).",
   },
   {
     hostname: "sheets.aphrody.com",
@@ -137,7 +139,8 @@ export const APHRODY_PUBLIC_DOMAINS: readonly AphrodyDomainEntry[] = [
     ownerRepo: "yolo-ui",
     service: "craft-grid",
     healthPath: "/health",
-    description: "Reactive spreadsheet, formula engine, and tabular data studio (GridCraft).",
+    description:
+      "Reactive spreadsheet, formula engine, and tabular data studio (GridCraft).",
   },
   {
     hostname: "slides.aphrody.com",
@@ -151,7 +154,8 @@ export const APHRODY_PUBLIC_DOMAINS: readonly AphrodyDomainEntry[] = [
     ownerRepo: "yolo-ui",
     service: "craft-deck",
     healthPath: "/health",
-    description: "Presentation deck authoring and interactive canvas studio (DeckCraft).",
+    description:
+      "Presentation deck authoring and interactive canvas studio (DeckCraft).",
   },
   {
     hostname: "mail.aphrody.com",
@@ -179,7 +183,8 @@ export const APHRODY_PUBLIC_DOMAINS: readonly AphrodyDomainEntry[] = [
     ownerRepo: "yolo-cloudflare",
     service: "cloudflare-meet",
     healthPath: "/health",
-    description: "Real-time WebRTC audio/video conferencing and screen sharing.",
+    description:
+      "Real-time WebRTC audio/video conferencing and screen sharing.",
   },
   {
     hostname: "calendar.aphrody.com",
@@ -207,7 +212,8 @@ export const APHRODY_PUBLIC_DOMAINS: readonly AphrodyDomainEntry[] = [
     ownerRepo: "yolo-ui",
     service: "craft-photo",
     healthPath: "/health",
-    description: "Photo library, RAW processing (LightCraft), and image editing (PhotoCraft).",
+    description:
+      "Photo library, RAW processing (LightCraft), and image editing (PhotoCraft).",
   },
   {
     hostname: "translate.aphrody.com",
@@ -221,7 +227,8 @@ export const APHRODY_PUBLIC_DOMAINS: readonly AphrodyDomainEntry[] = [
     ownerRepo: "yolo-ai",
     service: "aphrody-translate",
     healthPath: "/api/translate/health",
-    description: "Neural machine translation and document localization service.",
+    description:
+      "Neural machine translation and document localization service.",
   },
   {
     hostname: "maps.aphrody.com",
@@ -249,7 +256,8 @@ export const APHRODY_PUBLIC_DOMAINS: readonly AphrodyDomainEntry[] = [
     ownerRepo: "yolo-os",
     service: "aphrody-play",
     healthPath: "/api/play/health",
-    description: "Application store, WebRTC cloud gaming sessions, and WebAssembly arcade.",
+    description:
+      "Application store, WebRTC cloud gaming sessions, and WebAssembly arcade.",
   },
   {
     hostname: "os.aphrody.com",
@@ -263,7 +271,8 @@ export const APHRODY_PUBLIC_DOMAINS: readonly AphrodyDomainEntry[] = [
     ownerRepo: "yolo-os",
     service: "bunos-webos",
     healthPath: "/api/health",
-    description: "BunOS distribution portal, system images, package repositories, and remote desktop.",
+    description:
+      "BunOS distribution portal, system images, package repositories, and remote desktop.",
   },
   {
     hostname: "console.aphrody.com",
@@ -277,7 +286,8 @@ export const APHRODY_PUBLIC_DOMAINS: readonly AphrodyDomainEntry[] = [
     ownerRepo: "yolo-vps",
     service: "aphrody-console",
     healthPath: "/api/console/health",
-    description: "Cloud control plane, fleet observability, identity, and tenant administration.",
+    description:
+      "Cloud control plane, fleet observability, identity, and tenant administration.",
   },
   {
     hostname: "api.aphrody.com",
@@ -291,7 +301,8 @@ export const APHRODY_PUBLIC_DOMAINS: readonly AphrodyDomainEntry[] = [
     ownerRepo: "yolo-cloudflare",
     service: "yolo-cf-gateway",
     healthPath: "/_gateway/health",
-    description: "Unified Pingora/Axum API gateway for `/v1/*` product, AI, and store endpoints.",
+    description:
+      "Unified Pingora/Axum API gateway for `/v1/*` product, AI, and store endpoints.",
   },
   {
     hostname: "yolo.aphrody.com",
@@ -305,11 +316,13 @@ export const APHRODY_PUBLIC_DOMAINS: readonly AphrodyDomainEntry[] = [
     ownerRepo: "yolo-hub",
     service: "yolo-hub",
     healthPath: "/fr/",
-    description: "Leptos/Axum SSR and static edge export for the open-source YOLO meta-platform.",
+    description:
+      "Leptos/Axum SSR and static edge export for the open-source YOLO meta-platform.",
   },
 ] as const;
 
-export type AphrodyHostname = (typeof APHRODY_PUBLIC_DOMAINS)[number]["hostname"];
+export type AphrodyHostname =
+  (typeof APHRODY_PUBLIC_DOMAINS)[number]["hostname"];
 
 const BY_HOSTNAME = new Map<string, AphrodyDomainEntry>(
   APHRODY_PUBLIC_DOMAINS.map((entry) => [entry.hostname, entry]),
@@ -320,19 +333,25 @@ const BY_SUBDOMAIN = new Map<string, AphrodyDomainEntry>(
 );
 
 /** Look up a canonical domain entry by full hostname (case-insensitive, trailing dot stripped). */
-export function getAphrodyDomain(hostname: string): AphrodyDomainEntry | undefined {
+export function getAphrodyDomain(
+  hostname: string,
+): AphrodyDomainEntry | undefined {
   const normalized = hostname.trim().toLowerCase().replace(/\.$/, "");
   return BY_HOSTNAME.get(normalized);
 }
 
 /** Look up a canonical domain entry by subdomain label (`"@"` for apex). */
-export function getAphrodySubdomain(subdomain: string): AphrodyDomainEntry | undefined {
+export function getAphrodySubdomain(
+  subdomain: string,
+): AphrodyDomainEntry | undefined {
   const normalized = subdomain.trim().toLowerCase();
   return BY_SUBDOMAIN.get(normalized === "" ? "@" : normalized);
 }
 
 /** Return all domains belonging to a given category. */
-export function listDomainsByCategory(category: AphrodyProductCategory): AphrodyDomainEntry[] {
+export function listDomainsByCategory(
+  category: AphrodyProductCategory,
+): AphrodyDomainEntry[] {
   return APHRODY_PUBLIC_DOMAINS.filter((d) => d.category === category);
 }
 
@@ -361,9 +380,13 @@ export function validateDomainManifest(
     seenSubdomains.add(entry.subdomain);
 
     const expectedHost =
-      entry.subdomain === "@" ? APHRODY_ZONE : `${entry.subdomain}.${APHRODY_ZONE}`;
+      entry.subdomain === "@"
+        ? APHRODY_ZONE
+        : `${entry.subdomain}.${APHRODY_ZONE}`;
     if (entry.hostname !== expectedHost) {
-      errors.push(`hostname ${entry.hostname} does not match subdomain ${entry.subdomain}`);
+      errors.push(
+        `hostname ${entry.hostname} does not match subdomain ${entry.subdomain}`,
+      );
     }
 
     if (!entry.canonicalPath.startsWith("/")) {
@@ -385,4 +408,3 @@ if (import.meta.main) {
     );
   }
 }
-

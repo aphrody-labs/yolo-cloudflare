@@ -15,7 +15,10 @@ import { createAphrodyAuth } from "../auth/better-auth.js";
 import { FirebaseAuthBridge } from "../auth/firebase-bridge.js";
 import { AphrodyOAuthServer } from "../auth/oauth-server.js";
 import { AphrodyAuthClient } from "../auth/client-sdk.js";
-import { getProviderTemplates, buildAuthorizationUrl } from "../auth/providers.js";
+import {
+  getProviderTemplates,
+  buildAuthorizationUrl,
+} from "../auth/providers.js";
 import { Database } from "bun:sqlite";
 
 describe("Aphrody Email Templates (2026 Edition)", () => {
@@ -28,7 +31,7 @@ describe("Aphrody Email Templates (2026 Edition)", () => {
     expect(res.html).toContain("Aphrody Labs SAS");
     expect(res.html).toContain("SIREN: 918 827 892");
     expect(res.html).toContain("prefers-color-scheme: dark");
-    expect(res.html).toContain("viewBox=\"0 0 34 34\"");
+    expect(res.html).toContain('viewBox="0 0 34 34"');
     expect(res.text).toContain("contact@aphrody.app");
   });
 
@@ -218,13 +221,21 @@ describe("Multi-Provider Mail Dispatcher & VPS Mesh Relay", () => {
 
 describe("Aphrody Universal OAuth2 / OIDC Server", () => {
   test("Exposes valid OpenID Connect Discovery metadata and JWKS", () => {
-    const server = new AphrodyOAuthServer({ issuer: "https://auth.aphrody.app" });
+    const server = new AphrodyOAuthServer({
+      issuer: "https://auth.aphrody.app",
+    });
     const discovery = server.getOpenIdConfiguration();
 
     expect(discovery.issuer).toBe("https://auth.aphrody.app");
-    expect(discovery.authorization_endpoint).toBe("https://auth.aphrody.app/oauth/authorize");
-    expect(discovery.token_endpoint).toBe("https://auth.aphrody.app/oauth/token");
-    expect(discovery.jwks_uri).toBe("https://auth.aphrody.app/.well-known/jwks.json");
+    expect(discovery.authorization_endpoint).toBe(
+      "https://auth.aphrody.app/oauth/authorize",
+    );
+    expect(discovery.token_endpoint).toBe(
+      "https://auth.aphrody.app/oauth/token",
+    );
+    expect(discovery.jwks_uri).toBe(
+      "https://auth.aphrody.app/.well-known/jwks.json",
+    );
     expect(discovery.code_challenge_methods_supported).toContain("S256");
 
     const jwks = server.getJwks();
@@ -241,7 +252,10 @@ describe("Aphrody Universal OAuth2 / OIDC Server", () => {
     // 1. Authorize step with PKCE
     const verifier = "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
     // S256 hash of verifier
-    const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier));
+    const hash = await crypto.subtle.digest(
+      "SHA-256",
+      new TextEncoder().encode(verifier),
+    );
     const challenge = Buffer.from(hash).toString("base64url");
 
     const authRes = await server.handleAuthorize({
@@ -298,11 +312,20 @@ describe("Aphrody Universal OAuth2 / OIDC Server", () => {
 describe("Aphrody Universal Client SDK & Middleware", () => {
   test("Authenticates Bearer tokens and rejects forged signatures", async () => {
     const secret = "test-secret-key-32-chars-long-2026!";
-    const server = new AphrodyOAuthServer({ issuer: "https://auth.aphrody.app", jwtSecret: secret });
-    const client = new AphrodyAuthClient({ issuerUrl: "https://auth.aphrody.app", jwtSecret: secret });
+    const server = new AphrodyOAuthServer({
+      issuer: "https://auth.aphrody.app",
+      jwtSecret: secret,
+    });
+    const client = new AphrodyAuthClient({
+      issuerUrl: "https://auth.aphrody.app",
+      jwtSecret: secret,
+    });
 
     // Generate valid token
-    const tokenRes = await server.handleToken({ grantType: "client_credentials", clientId: "valid_client" });
+    const tokenRes = await server.handleToken({
+      grantType: "client_credentials",
+      clientId: "valid_client",
+    });
     const user = await client.authenticate(`Bearer ${tokenRes.access_token}`);
 
     expect(user).not.toBeNull();
@@ -316,10 +339,19 @@ describe("Aphrody Universal Client SDK & Middleware", () => {
 
   test("Protects native Web Requests and enforces roles", async () => {
     const secret = "test-secret-key-32-chars-long-2026!";
-    const server = new AphrodyOAuthServer({ issuer: "https://auth.aphrody.app", jwtSecret: secret });
-    const client = new AphrodyAuthClient({ issuerUrl: "https://auth.aphrody.app", jwtSecret: secret });
+    const server = new AphrodyOAuthServer({
+      issuer: "https://auth.aphrody.app",
+      jwtSecret: secret,
+    });
+    const client = new AphrodyAuthClient({
+      issuerUrl: "https://auth.aphrody.app",
+      jwtSecret: secret,
+    });
 
-    const tokenRes = await server.handleToken({ grantType: "client_credentials", clientId: "admin_service" });
+    const tokenRes = await server.handleToken({
+      grantType: "client_credentials",
+      clientId: "admin_service",
+    });
 
     // 1. Authorized request
     const req = new Request("https://api.aphrody.app/admin/data", {
@@ -350,7 +382,11 @@ describe("OAuth Provider Templates", () => {
     expect(templates.discord).toBeDefined();
     expect(templates.aphrody).toBeDefined();
 
-    const googleAuthUrl = buildAuthorizationUrl(templates.google, "state_abc", "challenge_xyz");
+    const googleAuthUrl = buildAuthorizationUrl(
+      templates.google,
+      "state_abc",
+      "challenge_xyz",
+    );
     expect(googleAuthUrl).toContain("accounts.google.com");
     expect(googleAuthUrl).toContain("client_id=g_client_123");
     expect(googleAuthUrl).toContain("state=state_abc");

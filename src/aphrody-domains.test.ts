@@ -34,7 +34,9 @@ const EXPECTED_HOSTNAMES = [
 describe("Aphrody public domain hierarchy manifest", () => {
   test("contains all 18 canonical public domains in exact order", () => {
     expect(APHRODY_ZONE).toBe("aphrody.com");
-    expect(APHRODY_PUBLIC_DOMAINS.map((d) => d.hostname)).toEqual([...EXPECTED_HOSTNAMES]);
+    expect(APHRODY_PUBLIC_DOMAINS.map((d) => d.hostname)).toEqual([
+      ...EXPECTED_HOSTNAMES,
+    ]);
     expect(APHRODY_PUBLIC_DOMAINS.length).toBe(18);
   });
 
@@ -62,7 +64,9 @@ describe("Aphrody public domain hierarchy manifest", () => {
   });
 
   test("filters domains by category and owner repository", () => {
-    const workspaceDomains = listDomainsByCategory("workspace").map((d) => d.hostname);
+    const workspaceDomains = listDomainsByCategory("workspace").map(
+      (d) => d.hostname,
+    );
     expect(workspaceDomains).toEqual([
       "drive.aphrody.com",
       "docs.aphrody.com",
@@ -71,7 +75,13 @@ describe("Aphrody public domain hierarchy manifest", () => {
       "calendar.aphrody.com",
     ]);
 
-    const cfOwned = listDomainsByOwner("yolo-cloudflare").map((d) => d.hostname);
-    expect(cfOwned).toEqual(["mail.aphrody.com", "meet.aphrody.com", "api.aphrody.com"]);
+    const cfOwned = listDomainsByOwner("yolo-cloudflare").map(
+      (d) => d.hostname,
+    );
+    expect(cfOwned).toEqual([
+      "mail.aphrody.com",
+      "meet.aphrody.com",
+      "api.aphrody.com",
+    ]);
   });
 });

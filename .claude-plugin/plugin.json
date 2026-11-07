@@ -7,5 +7,12 @@
   },
   "repository": "https://github.com/yolo-rs/yolo-cloudflare",
   "license": "Apache-2.0",
-  "keywords": ["workerd", "pingora", "garage", "rqlite", "self-hosted", "wireguard"]
+  "keywords": [
+    "workerd",
+    "pingora",
+    "garage",
+    "rqlite",
+    "self-hosted",
+    "wireguard"
+  ]
 }
