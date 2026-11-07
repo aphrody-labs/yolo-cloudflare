@@ -10,6 +10,10 @@
     "lock-sources": "bun run scripts/lock-sources.ts"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261107.1",
     "@types/bun": "^1.4.4"
+  },
+  "dependencies": {
+    "hono": "^4.13.16"
   }
 }
