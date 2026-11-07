@@ -6,6 +6,7 @@ export * from "./security-alert.js";
 export * from "./invoice.js";
 export * from "./system-alert.js";
 export * from "./password-reset.js";
+export * from "./noreply.js";
 
 import { renderWelcomeEmail, type WelcomeTemplateProps } from "./welcome.js";
 import { renderMagicLinkEmail, type MagicLinkTemplateProps } from "./magic-link.js";
@@ -14,6 +15,7 @@ import { renderSecurityAlertEmail, type SecurityAlertTemplateProps } from "./sec
 import { renderInvoiceEmail, type InvoiceTemplateProps } from "./invoice.js";
 import { renderSystemAlertEmail, type SystemAlertTemplateProps } from "./system-alert.js";
 import { renderPasswordResetEmail, type PasswordResetTemplateProps } from "./password-reset.js";
+import { renderNoreplyNotification, type NoreplyNotificationProps } from "./noreply.js";
 
 export type EmailTemplateName =
   | "welcome"
@@ -22,14 +24,15 @@ export type EmailTemplateName =
   | "security-alert"
   | "invoice"
   | "system-alert"
-  | "password-reset";
+  | "password-reset"
+  | "noreply";
 
 export interface RenderTemplateOptions {
   template: EmailTemplateName;
   data: any;
 }
 
-export function renderTemplate(options: RenderTemplateOptions): { html: string; text: string; subject: string } {
+export function renderTemplate(options: RenderTemplateOptions): { html: string; text: string; subject: string; from?: string } {
   switch (options.template) {
     case "welcome":
       return renderWelcomeEmail(options.data as WelcomeTemplateProps);
@@ -45,6 +48,8 @@ export function renderTemplate(options: RenderTemplateOptions): { html: string; 
       return renderSystemAlertEmail(options.data as SystemAlertTemplateProps);
     case "password-reset":
       return renderPasswordResetEmail(options.data as PasswordResetTemplateProps);
+    case "noreply":
+      return renderNoreplyNotification(options.data as NoreplyNotificationProps);
     default:
       throw new Error(`Unknown email template: ${options.template}`);
   }

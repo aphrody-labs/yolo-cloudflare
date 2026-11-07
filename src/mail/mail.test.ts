@@ -8,10 +8,14 @@ import {
   renderInvoiceEmail,
   renderSystemAlertEmail,
   renderPasswordResetEmail,
+  renderNoreplyNotification,
 } from "./templates/index.js";
 import { MailDispatcher } from "./dispatcher.js";
 import { createAphrodyAuth } from "../auth/better-auth.js";
 import { FirebaseAuthBridge } from "../auth/firebase-bridge.js";
+import { AphrodyOAuthServer } from "../auth/oauth-server.js";
+import { AphrodyAuthClient } from "../auth/client-sdk.js";
+import { getProviderTemplates, buildAuthorizationUrl } from "../auth/providers.js";
 import { Database } from "bun:sqlite";
 
 describe("Aphrody Email Templates (2026 Edition)", () => {
@@ -106,7 +110,34 @@ describe("Aphrody Email Templates (2026 Edition)", () => {
     expect(res.html).toContain("https://aphrody.app/reset?tok=999");
   });
 
-  test("renderTemplate registry renders all 7 templates dynamically", () => {
+  test("renderNoreplyNotification outputs automated system telemetry across domains", () => {
+    const resApp = renderNoreplyNotification({
+      email: "contact@aphrody.com",
+      senderDomain: "aphrody.app",
+      category: "DEPLOYMENT",
+      title: "Mesh Gateway v1.1.0 Released",
+      summary: "Deployment verified on Hostinger prod and OVH fleet.",
+      details: [
+        { label: "Hostinger KVM 8", value: "72.60.186.43 (Active)" },
+        { label: "OVH Mesh Nodes", value: "51.77.147.152, 51.255.162.6" },
+      ],
+    });
+    expect(resApp.from).toBe("Aphrody System <noreply@aphrody.app>");
+    expect(resApp.subject).toContain("[DEPLOYMENT]");
+    expect(resApp.html).toContain("72.60.186.43");
+
+    const resCom = renderNoreplyNotification({
+      email: "contact@aphrody.com",
+      senderDomain: "aphrody.com",
+      category: "SECURITY_DIGEST",
+      title: "Weekly Security Overview",
+      summary: "Zero unauthorized intrusions detected.",
+      details: [{ label: "Turnstile Status", value: "100% Pass" }],
+    });
+    expect(resCom.from).toBe("Aphrody System <noreply@aphrody.com>");
+  });
+
+  test("renderTemplate registry renders all 8 templates dynamically", () => {
     const templates = [
       "welcome",
       "magic-link",
@@ -115,6 +146,7 @@ describe("Aphrody Email Templates (2026 Edition)", () => {
       "invoice",
       "system-alert",
       "password-reset",
+      "noreply",
     ] as const;
 
     for (const t of templates) {
@@ -133,7 +165,10 @@ describe("Aphrody Email Templates (2026 Edition)", () => {
           nodeName: "node",
           meshIp: "10.200.77.1",
           status: "RESOLVED",
-          details: "Details",
+          details: [{ label: "Key", value: "Val" }],
+          category: "SYSTEM_SYNC",
+          title: "Title",
+          summary: "Summary",
           resetUrl: "https://aphrody.app/reset",
         },
       });
@@ -145,7 +180,6 @@ describe("Aphrody Email Templates (2026 Edition)", () => {
 
 describe("Multi-Provider Mail Dispatcher & VPS Mesh Relay", () => {
   test("MailDispatcher initializes and routes to VPS mesh relay fallback", async () => {
-    // Spin up local test mesh relay
     using testServer = Bun.serve({
       port: 17099,
       fetch(req) {
@@ -179,6 +213,148 @@ describe("Multi-Provider Mail Dispatcher & VPS Mesh Relay", () => {
     expect(receipt.provider).toBe("vps-mesh");
     expect(receipt.messageId).toBe("vps_test_mock_12345");
     expect(receipt.latencyMs).toBeGreaterThanOrEqual(0);
+  });
+});
+
+describe("Aphrody Universal OAuth2 / OIDC Server", () => {
+  test("Exposes valid OpenID Connect Discovery metadata and JWKS", () => {
+    const server = new AphrodyOAuthServer({ issuer: "https://auth.aphrody.app" });
+    const discovery = server.getOpenIdConfiguration();
+
+    expect(discovery.issuer).toBe("https://auth.aphrody.app");
+    expect(discovery.authorization_endpoint).toBe("https://auth.aphrody.app/oauth/authorize");
+    expect(discovery.token_endpoint).toBe("https://auth.aphrody.app/oauth/token");
+    expect(discovery.jwks_uri).toBe("https://auth.aphrody.app/.well-known/jwks.json");
+    expect(discovery.code_challenge_methods_supported).toContain("S256");
+
+    const jwks = server.getJwks();
+    expect(jwks.keys.length).toBeGreaterThan(0);
+    expect(jwks.keys[0].kid).toBe("aphrody-auth-key-2026");
+  });
+
+  test("Executes full Authorization Code flow with PKCE and UserInfo retrieval", async () => {
+    const server = new AphrodyOAuthServer({
+      issuer: "https://auth.aphrody.app",
+      jwtSecret: "test-secret-key-32-chars-long-2026!",
+    });
+
+    // 1. Authorize step with PKCE
+    const verifier = "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
+    // S256 hash of verifier
+    const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier));
+    const challenge = Buffer.from(hash).toString("base64url");
+
+    const authRes = await server.handleAuthorize({
+      clientId: "aphrody-webos",
+      redirectUri: "https://aphrody.app/callback",
+      responseType: "code",
+      state: "state_12345",
+      codeChallenge: challenge,
+      codeChallengeMethod: "S256",
+      userId: "user_test_99",
+    });
+
+    expect(authRes.code).toBeDefined();
+    expect(authRes.redirectUrl).toContain("code=");
+    expect(authRes.redirectUrl).toContain("state=state_12345");
+
+    // 2. Token exchange step
+    const tokenRes = await server.handleToken({
+      grantType: "authorization_code",
+      code: authRes.code,
+      redirectUri: "https://aphrody.app/callback",
+      clientId: "aphrody-webos",
+      codeVerifier: verifier,
+    });
+
+    expect(tokenRes.token_type).toBe("Bearer");
+    expect(tokenRes.access_token).toBeDefined();
+    expect(tokenRes.id_token).toBeDefined();
+    expect(tokenRes.refresh_token).toBeDefined();
+
+    // 3. UserInfo step
+    const userinfo = await server.getUserInfo(tokenRes.access_token);
+    expect(userinfo.sub).toBe("user_test_99");
+    expect(userinfo.issuer).toBe("https://auth.aphrody.app");
+  });
+
+  test("Issues client_credentials tokens for mesh inter-service communication", async () => {
+    const server = new AphrodyOAuthServer({
+      issuer: "https://auth.aphrody.app",
+      jwtSecret: "test-secret-key-32-chars-long-2026!",
+    });
+
+    const tokenRes = await server.handleToken({
+      grantType: "client_credentials",
+      clientId: "aphrody-vps-mesh-client",
+      clientSecret: "secret",
+    });
+
+    expect(tokenRes.access_token).toBeDefined();
+    expect(tokenRes.scope).toContain("mesh:control");
+  });
+});
+
+describe("Aphrody Universal Client SDK & Middleware", () => {
+  test("Authenticates Bearer tokens and rejects forged signatures", async () => {
+    const secret = "test-secret-key-32-chars-long-2026!";
+    const server = new AphrodyOAuthServer({ issuer: "https://auth.aphrody.app", jwtSecret: secret });
+    const client = new AphrodyAuthClient({ issuerUrl: "https://auth.aphrody.app", jwtSecret: secret });
+
+    // Generate valid token
+    const tokenRes = await server.handleToken({ grantType: "client_credentials", clientId: "valid_client" });
+    const user = await client.authenticate(`Bearer ${tokenRes.access_token}`);
+
+    expect(user).not.toBeNull();
+    expect(user?.id).toBe("valid_client");
+    expect(user?.role).toBe("service");
+
+    // Test forged token
+    const forged = await client.authenticate("Bearer fake.jwt.signature");
+    expect(forged).toBeNull();
+  });
+
+  test("Protects native Web Requests and enforces roles", async () => {
+    const secret = "test-secret-key-32-chars-long-2026!";
+    const server = new AphrodyOAuthServer({ issuer: "https://auth.aphrody.app", jwtSecret: secret });
+    const client = new AphrodyAuthClient({ issuerUrl: "https://auth.aphrody.app", jwtSecret: secret });
+
+    const tokenRes = await server.handleToken({ grantType: "client_credentials", clientId: "admin_service" });
+
+    // 1. Authorized request
+    const req = new Request("https://api.aphrody.app/admin/data", {
+      headers: { Authorization: `Bearer ${tokenRes.access_token}` },
+    });
+    const check = await client.protect(req, ["service"]);
+    expect(check.authorized).toBe(true);
+
+    // 2. Forbidden request (insufficient role)
+    const checkForbidden = await client.protect(req, ["superadmin_only"]);
+    expect(checkForbidden.authorized).toBe(false);
+  });
+});
+
+describe("OAuth Provider Templates", () => {
+  test("Resolves all 7 identity provider configurations and builds authorization URLs", () => {
+    const templates = getProviderTemplates({
+      BETTER_AUTH_URL: "https://auth.aphrody.app",
+      GOOGLE_CLIENT_ID: "g_client_123",
+      GITHUB_CLIENT_ID: "gh_client_456",
+    });
+
+    expect(templates.google).toBeDefined();
+    expect(templates.github).toBeDefined();
+    expect(templates.cloudflare).toBeDefined();
+    expect(templates.apple).toBeDefined();
+    expect(templates.microsoft).toBeDefined();
+    expect(templates.discord).toBeDefined();
+    expect(templates.aphrody).toBeDefined();
+
+    const googleAuthUrl = buildAuthorizationUrl(templates.google, "state_abc", "challenge_xyz");
+    expect(googleAuthUrl).toContain("accounts.google.com");
+    expect(googleAuthUrl).toContain("client_id=g_client_123");
+    expect(googleAuthUrl).toContain("state=state_abc");
+    expect(googleAuthUrl).toContain("code_challenge=challenge_xyz");
   });
 });
 
